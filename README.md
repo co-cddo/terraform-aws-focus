@@ -1,6 +1,26 @@
-## Requirements
+# terraform-aws-focus
 
-No requirements.
+A Terraform module for setting up a FOCUS (FinOps Open Cost and Usage Specification) export within an AWS account. This module configures an export destination bucket in AWS, enables replication to the Government Digital Services (GDS), and applies necessary policies for secure data transfer.
+
+## Features
+
+Creates an S3 bucket for FOCUS exports in the AWS account
+
+Configures replication to a GDS-managed destination bucket
+
+Applies IAM policies for secure access
+
+Enables versioning and encryption
+
+Optionally configures lifecycle policies
+
+## Prerequisites
+
+Terraform 1.0+
+
+AWS CLI configured with appropriate permissions
+
+An IAM role with sufficient permissions to create and manage S3 buckets and replication rules, and AWS BCM data exports.
 
 ## Providers
 
