@@ -4,15 +4,11 @@ A Terraform module for setting up a FOCUS (FinOps Open Cost and Usage Specificat
 
 ## Features
 
-Creates an S3 bucket for FOCUS exports in the AWS account
-
-Configures replication to a GDS-managed destination bucket
-
-Applies IAM policies for secure access
-
-Enables versioning and encryption
-
-Optionally configures lifecycle policies
+* Creates an S3 bucket for FOCUS exports in the AWS account
+* Configures replication to a GDS-managed destination bucket
+* Applies IAM policies for secure access
+* Enables versioning and encryption
+* Optionally configures lifecycle policies
 
 ## Prerequisites
 
