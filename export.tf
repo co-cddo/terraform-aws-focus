@@ -17,7 +17,7 @@ resource "aws_bcmdataexports_export" "this" {
         s3_prefix = local.account_id
 
         s3_output_configurations {
-          overwrite   = "CREATE_NEW_REPORT"
+          overwrite   = "OVERWRITE_REPORT"
           format      = "PARQUET"
           compression = "PARQUET"
           output_type = "CUSTOM"
