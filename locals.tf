@@ -7,7 +7,6 @@ locals {
   export_fields = [
     "AvailabilityZone",
     "BilledCost",
-    "BillingAccountId",
     "BillingCurrency",
     "BillingPeriodEnd",
     "BillingPeriodStart",
@@ -19,7 +18,6 @@ locals {
     "ChargePeriodStart",
     "CommitmentDiscountCategory",
     "CommitmentDiscountId",
-    "CommitmentDiscountName",
     "CommitmentDiscountStatus",
     "CommitmentDiscountType",
     "ConsumedQuantity",
@@ -36,7 +34,6 @@ locals {
     "ProviderName",
     "PublisherName",
     "RegionName",
-    "ResourceId",
     "ResourceType",
     "ServiceCategory",
     "ServiceName",
