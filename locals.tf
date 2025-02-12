@@ -12,7 +12,6 @@ locals {
     "BillingPeriodStart",
     "ChargeCategory",
     "ChargeClass",
-    "ChargeDescription",
     "ChargeFrequency",
     "ChargePeriodEnd",
     "ChargePeriodStart",
