@@ -2,6 +2,18 @@
 
 A Terraform module for setting up a FOCUS (FinOps Open Cost and Usage Specification) export within an AWS account. This module configures an export destination bucket in AWS, enables replication to the Government Digital Services (GDS), and applies necessary policies for secure data transfer.
 
+## Review
+[@jonodrew](https://github.com/jonodrew) reviewed this package on 2025-02-13 and found no significant concerns. The package:
+
+1. Creates a new S3 bucket for storing cost exports
+2. Sets up replication to a central S3 bucket
+3. Sets up AWS cost exports to create a daily report and store it in the bucket created in step 1
+4. Sets up a cleanup on the bucket to remove old / deleted files after 7 days
+
+The Bucket's Role has permissions to replicate any Object that is put in it, so hosting teams must ensure that nothing is accidentally placed there. 
+
+If this library is deployed through a continuous deployment (CD) pipeline, deploying teams should thoroughly check any changes to this codebase before they are deployed. 
+
 ## Features
 
 * Creates an S3 bucket for FOCUS exports in the AWS account
