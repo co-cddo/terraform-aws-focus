@@ -19,8 +19,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
     status = "Enabled"
 
     expiration {
-      days                         = 0
-      expired_object_delete_marker = true
+      days = 7
     }
 
     abort_incomplete_multipart_upload {
@@ -28,7 +27,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
     }
 
     noncurrent_version_expiration {
-      noncurrent_days = 7
+      noncurrent_days = 1
     }
   }
 }
