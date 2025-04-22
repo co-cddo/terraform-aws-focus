@@ -18,6 +18,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
     id     = "Cleanup"
     status = "Enabled"
 
+    filter {
+      prefix = ""
+    }
+
     expiration {
       days = 7
     }
