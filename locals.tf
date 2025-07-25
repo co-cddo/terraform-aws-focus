@@ -52,20 +52,17 @@ locals {
     "last_refresh_timestamp",
     "location",
     "model_version",
-    "payer_account_id",
     "product_code",
     "region_code",
     "total_lbm_emissions_unit",
     "total_lbm_emissions_value",
     "total_mbm_emissions_unit",
     "total_mbm_emissions_value",
-    "usage_account_id",
     "usage_period_end",
     "usage_period_start",
   ]
 
   recommendations_export_fields = [
-    "account_id",
     "action_type",
     "currency_code",
     "current_resource_details",
@@ -86,9 +83,7 @@ locals {
     "recommended_resource_summary",
     "recommended_resource_type",
     "region",
-    "resource_arn",
     "restart_needed",
     "rollback_possible",
-    "tags",
   ]
 }
