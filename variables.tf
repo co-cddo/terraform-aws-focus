@@ -1,3 +1,15 @@
+variable "enable_carbon_export" {
+  type        = bool
+  default     = true
+  description = "Enables the collection of carbon footprint report"
+}
+
+variable "enable_cost_recommendations_export" {
+  type        = bool
+  default     = true
+  description = "Enables the collection of cost recommendations report"
+}
+
 variable "bucket_name" {
   type        = string
   default     = null

@@ -37,6 +37,8 @@ resource "aws_bcmdataexports_export" "focus" {
 }
 
 resource "aws_bcmdataexports_export" "carbon" {
+  for_each = local.carbon_toggle
+
   export {
     name = "gds-carbon-v1"
 
@@ -70,6 +72,8 @@ resource "aws_bcmdataexports_export" "carbon" {
 }
 
 resource "aws_bcmdataexports_export" "recommendations" {
+  for_each = local.cost_recommendations_toggle
+
   export {
     name = "gds-recommendations-v1"
 

@@ -104,39 +104,47 @@ resource "aws_s3_bucket_replication_configuration" "this" {
     }
   }
 
-  rule {
-    id       = "GDSCarbonDataExport"
-    status   = "Enabled"
-    priority = 9
+  dynamic "rule" {
+    for_each = aws_bcmdataexports_export.carbon
 
-    destination {
-      bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
-    }
+    content {
+      id       = "GDSCarbonDataExport"
+      status   = "Enabled"
+      priority = 9
 
-    filter {
-      prefix = format("%s/%s/data/", local.account_id, aws_bcmdataexports_export.carbon.export[0].name)
-    }
+      destination {
+        bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
+      }
 
-    delete_marker_replication {
-      status = "Disabled"
+      filter {
+        prefix = format("%s/%s/data/", local.account_id, rule.value.export[0].name)
+      }
+
+      delete_marker_replication {
+        status = "Disabled"
+      }
     }
   }
 
-  rule {
-    id       = "GDSRecommendationsDataExport"
-    status   = "Enabled"
-    priority = 8
+  dynamic "rule" {
+    for_each = aws_bcmdataexports_export.recommendations
 
-    destination {
-      bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
-    }
+    content {
+      id       = "GDSRecommendationsDataExport"
+      status   = "Enabled"
+      priority = 8
 
-    filter {
-      prefix = format("%s/%s/data/", local.account_id, aws_bcmdataexports_export.recommendations.export[0].name)
-    }
+      destination {
+        bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
+      }
 
-    delete_marker_replication {
-      status = "Disabled"
+      filter {
+        prefix = format("%s/%s/data/", local.account_id, rule.value.export[0].name)
+      }
+
+      delete_marker_replication {
+        status = "Disabled"
+      }
     }
   }
 

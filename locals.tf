@@ -4,6 +4,14 @@ locals {
   default_bucket_name = format("gds-export-%s", local.account_id)
   bucket_name         = coalesce(var.bucket_name, local.default_bucket_name)
 
+  carbon_toggle = toset(
+    var.enable_carbon_export ? ["enabled"] : []
+  )
+
+  cost_recommendations_toggle = toset(
+    var.enable_cost_recommendations_export ? ["enabled"] : []
+  )
+
   focus_export_fields = [
     "AvailabilityZone",
     "BilledCost",
