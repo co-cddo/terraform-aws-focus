@@ -87,15 +87,52 @@ resource "aws_s3_bucket_replication_configuration" "this" {
   role   = aws_iam_role.this.arn
 
   rule {
-    id     = "GDSDataExport"
-    status = "Enabled"
+    id       = "GDSFocusDataExport"
+    status   = "Enabled"
+    priority = 10
 
     destination {
       bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
     }
 
     filter {
-      prefix = format("%s/%s/data/", local.account_id, aws_bcmdataexports_export.this.export[0].name)
+      prefix = format("%s/%s/data/", local.account_id, aws_bcmdataexports_export.focus.export[0].name)
+    }
+
+    delete_marker_replication {
+      status = "Disabled"
+    }
+  }
+
+  rule {
+    id       = "GDSCarbonDataExport"
+    status   = "Enabled"
+    priority = 9
+
+    destination {
+      bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
+    }
+
+    filter {
+      prefix = format("%s/%s/data/", local.account_id, aws_bcmdataexports_export.carbon.export[0].name)
+    }
+
+    delete_marker_replication {
+      status = "Disabled"
+    }
+  }
+
+  rule {
+    id       = "GDSRecommendationsDataExport"
+    status   = "Enabled"
+    priority = 8
+
+    destination {
+      bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
+    }
+
+    filter {
+      prefix = format("%s/%s/data/", local.account_id, aws_bcmdataexports_export.recommendations.export[0].name)
     }
 
     delete_marker_replication {
