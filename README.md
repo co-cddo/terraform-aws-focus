@@ -4,7 +4,8 @@ A Terraform module for exporting:
 * [FOCUS](https://focus.finops.org/) (FinOps Open Cost and Usage Specification).
 * [Cost Optimisation recommendations](https://aws.amazon.com/blogs/aws-cloud-financial-management/generate-your-cost-optimization-reports-with-data-exports-for-cost-optimization-hub/).
 * [Carbon Emissions data](https://aws.amazon.com/blogs/aws-cloud-financial-management/export-and-visualize-carbon-emissions-data-from-your-aws-accounts/).
-to an S3 bucket, which replicates securely to Government Digital Services (GDS), over the AWS internal network.
+
+Exports are delivered to an S3 bucket, which replicates securely to Government Digital Services (GDS), over the AWS internal network.
 
 The encrypted (SSE-S3) S3 bucket has the following:
 * Bucket Policy which grants permissions to the BCM Data Exports service to write the report data files.
