@@ -1,6 +1,8 @@
 # terraform-aws-focus
 
-A Terraform module for setting up a FOCUS (FinOps Open Cost and Usage Specification) export within an AWS account. This module configures an export destination bucket in AWS, enables replication to the Government Digital Services (GDS), and applies necessary policies for secure data transfer.
+A Terraform module for setting up FOCUS (FinOps Open Cost and Usage Specification), Carbon Emission and Cost Optimisation data exports within an AWS account. This module configures an export destination S3 Bucket in AWS, enables replication to a Government Digital Services (GDS) destination S3 Bucket and applies necessary policies for secure data transfer.
+
+Data exports are created through the AWS Billing & Cost Management service, which is responsible for securely delivering them to the S3 bucket. The bucket is configured with a replication policy to replicate (push from your account to GDS) to GDS which is handled by the S3 service to securely transfer the data. The S3 service will utilise a service-linked IAM role (created by this module) to grant permission to replicate the data. The IAM role is authorised on the destination GDS S3 bucket to allow the sender to only replicate the data, and to an isolated drop-zone. The replication takes place through the AWS backplane and does not require transferring the data over the open internet.
 
 ## Review
 [@jonodrew](https://github.com/jonodrew) reviewed this package on 2025-02-13 and found no significant concerns. The package:
@@ -16,11 +18,12 @@ If this library is deployed through a continuous deployment (CD) pipeline, deplo
 
 ## Features
 
-* Creates an S3 bucket for FOCUS exports in the AWS account
-* Configures replication to a GDS-managed destination bucket
-* Applies IAM policies for secure access
-* Enables versioning and encryption
-* Optionally configures lifecycle policies
+* Creates AWS Billing & Cost Management data exports for FOCUS, Carbon Emission and Cost Optimisation.
+* Creates an S3 Bucket storing export data in the AWS account.
+* Configures replication to a GDS managed destination S3 Bucket.
+* Creates a service-link IAM Role for use in replication to GDS.
+* Enables versioning and encryption for data at rest within the S3 bucket.
+* Configures an S3 Bucket Lifecycle Policy to ensure data is not retained longer than neccesary.
 
 ## Prerequisites
 
