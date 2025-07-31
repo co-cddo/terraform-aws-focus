@@ -10,6 +10,12 @@ variable "enable_cost_recommendations_export" {
   description = "Enables the collection of cost recommendations report"
 }
 
+variable "create_cost_recommendations_service_linked_role" {
+  type        = bool
+  default     = false
+  description = "Enables the creation of the required service-linked role for data exports to access cost optimisation hub"
+}
+
 variable "bucket_name" {
   type        = string
   default     = null

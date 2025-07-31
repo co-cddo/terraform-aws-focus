@@ -107,4 +107,8 @@ resource "aws_bcmdataexports_export" "recommendations" {
       frequency = "SYNCHRONOUS"
     }
   }
+
+  depends_on = [
+    aws_iam_service_linked_role.bcm_data_exports,
+  ]
 }

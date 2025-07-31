@@ -1,3 +1,9 @@
+resource "aws_iam_service_linked_role" "bcm_data_exports" {
+  count = var.create_cost_recommendations_service_linked_role ? 1 : 0
+
+  aws_service_name = "bcm-data-exports.amazonaws.com"
+}
+
 data "aws_iam_policy_document" "replicator_assume" {
   statement {
     effect = "Allow"
