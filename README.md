@@ -13,6 +13,8 @@ The encrypted (SSE-S3) S3 bucket has the following:
 * Service Linked IAM role allowing the S3 service to read objects from the bucket and replicate them to the destination bucket.
 * Replication rule that uses the IAM role above to do the replication. The IAM role is authorised on the destination GDS S3 bucket to allow the sender to only replicate the data, and to an isolated drop-zone.
 
+![Architecture](images/gds-cc-v2.png)
+
 ## Review
 [@jonodrew](https://github.com/jonodrew) reviewed this package on 2025-02-13 and found no significant concerns. The package:
 
