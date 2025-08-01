@@ -3,5 +3,9 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
+
+    time = {
+      source = "hashicorp/time"
+    }
   }
 }

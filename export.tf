@@ -109,6 +109,7 @@ resource "aws_bcmdataexports_export" "recommendations" {
   }
 
   depends_on = [
-    aws_iam_service_linked_role.bcm_data_exports,
+    time_sleep.service_linked_role,
+    aws_costoptimizationhub_enrollment_status.this,
   ]
 }
