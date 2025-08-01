@@ -4,6 +4,14 @@ resource "aws_iam_service_linked_role" "bcm_data_exports" {
   aws_service_name = "bcm-data-exports.amazonaws.com"
 }
 
+resource "time_sleep" "service_linked_role" {
+  create_duration = "10s"
+
+  depends_on = [
+    aws_iam_service_linked_role.bcm_data_exports,
+  ]
+}
+
 data "aws_iam_policy_document" "replicator_assume" {
   statement {
     effect = "Allow"
