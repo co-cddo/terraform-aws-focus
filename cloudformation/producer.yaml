@@ -1,0 +1,218 @@
+Parameters:
+  DestinationBucket:
+    Description: Destination bucket to replicate reports to
+    Type: String
+  DestinationAccountId:
+    Type: String
+    Description: AWS Account ID of the destination
+  CreateExportsServiceLinkedRole:
+    Type: String
+    AllowedValues:
+      - Yes
+      - No
+    Default: Yes
+Conditions:
+  ShouldCreateServiceLinkedRole:
+    !Equals [true, !Ref CreateExportsServiceLinkedRole]
+Resources:
+  ExportsRole:
+    Type: AWS::IAM::ServiceLinkedRole
+    Condition: ShouldCreateServiceLinkedRole
+    Properties:
+      AWSServiceName: bcm-data-exports.amazonaws.com
+  FocusExport:
+    Type: AWS::BCMDataExports::Export
+    DependsOn:
+      - ReportBucketPolicy
+    Properties:
+      Export:
+        RefreshCadence:
+          Frequency: SYNCHRONOUS
+        DataQuery:
+          QueryStatement: SELECT
+            AvailabilityZone,BilledCost,BillingCurrency,BillingPeriodEnd,BillingPeriodStart,ChargeCategory,ChargeClass,ChargeFrequency,ChargePeriodEnd,ChargePeriodStart,CommitmentDiscountCategory,CommitmentDiscountId,CommitmentDiscountStatus,CommitmentDiscountType,ConsumedQuantity,ConsumedUnit,ContractedCost,ContractedUnitPrice,EffectiveCost,InvoiceIssuerName,ListCost,ListUnitPrice,PricingCategory,PricingQuantity,PricingUnit,ProviderName,PublisherName,RegionName,ResourceType,ServiceCategory,ServiceName,SkuId,SkuPriceId
+            FROM FOCUS_1_0_AWS
+          TableConfigurations:
+            FOCUS_1_0_AWS: {}
+        DestinationConfigurations:
+          S3Destination:
+            S3Bucket: !Ref ReportBucket
+            S3OutputConfigurations:
+              Compression: PARQUET
+              Overwrite: OVERWRITE_REPORT
+              Format: PARQUET
+              OutputType: CUSTOM
+            S3Region: eu-west-2
+            S3Prefix: !Ref DestinationAccountId
+        Name: gds-carbon-v1
+  CarbonExport:
+    Type: AWS::BCMDataExports::Export
+    DependsOn:
+      - ReportBucketPolicy
+    Properties:
+      Export:
+        RefreshCadence:
+          Frequency: SYNCHRONOUS
+        DataQuery:
+          QueryStatement: SELECT
+            last_refresh_timestamp,location,model_version,product_code,region_code,total_lbm_emissions_unit,total_lbm_emissions_value,total_mbm_emissions_unit,total_mbm_emissions_value,usage_period_end,usage_period_start
+            FROM CARBON_EMISSIONS
+          TableConfigurations:
+            CARBON_EMISSIONS: {}
+        DestinationConfigurations:
+          S3Destination:
+            S3Bucket: !Ref ReportBucket
+            S3OutputConfigurations:
+              Compression: PARQUET
+              Overwrite: OVERWRITE_REPORT
+              Format: PARQUET
+              OutputType: CUSTOM
+            S3Region: eu-west-2
+            S3Prefix: !Ref DestinationAccountId
+        Name: gds-focus-v1
+  RecommendationsExport:
+    Type: AWS::BCMDataExports::Export
+    DependsOn:
+      - ReportBucketPolicy
+    Properties:
+      Export:
+        RefreshCadence:
+          Frequency: SYNCHRONOUS
+        DataQuery:
+          QueryStatement: SELECT
+            action_type,currency_code,current_resource_details,current_resource_summary,current_resource_type,estimated_monthly_cost_after_discount,estimated_monthly_cost_before_discount,estimated_monthly_savings_after_discount,estimated_monthly_savings_before_discount,estimated_savings_percentage_after_discount,estimated_savings_percentage_before_discount,implementation_effort,last_refresh_timestamp,recommendation_id,recommendation_lookback_period_in_days,recommendation_source,recommended_resource_details,recommended_resource_summary,recommended_resource_type,region,restart_needed,rollback_possible
+            FROM COST_OPTIMIZATION_RECOMMENDATIONS
+          TableConfigurations:
+            COST_OPTIMIZATION_RECOMMENDATIONS:
+              INCLUDE_ALL_RECOMMENDATIONS: 'TRUE'
+              FILTER: '{}'
+        DestinationConfigurations:
+          S3Destination:
+            S3Bucket: !Ref ReportBucket
+            S3OutputConfigurations:
+              Compression: PARQUET
+              Overwrite: OVERWRITE_REPORT
+              Format: PARQUET
+              OutputType: CUSTOM
+            S3Region: eu-west-2
+            S3Prefix: !Ref DestinationAccountId
+        Name: gds-recommendations-v1
+  ReportBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub gds-export-${AWS::AccountId}
+      VersioningConfiguration:
+        Status: Enabled
+      ReplicationConfiguration:
+        Role: !GetAtt
+          - ReplicationRole
+          - Arn
+        Rules:
+          - Id: GDSFocusDataExport
+            Priority: 10
+            Status: Enabled
+            Filter:
+              Prefix: !Join
+                - /
+                - - !Ref AWS::AccountId
+                  - gds-focus-v1
+                  - data
+            Destination:
+              Bucket: !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref DestinationBucket
+            DeleteMarkerReplication:
+              Status: Disabled
+          - Id: GDSCarbonDataExport
+            Priority: 20
+            Status: Enabled
+            Filter:
+              Prefix: !Join
+                - /
+                - - !Ref AWS::AccountId
+                  - gds-carbon-v1
+                  - data
+            Destination:
+              Bucket: !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref DestinationBucket
+            DeleteMarkerReplication:
+              Status: Disabled
+          - Id: GDSRecommendationsDataExport
+            Priority: 30
+            Status: Enabled
+            Filter:
+              Prefix: !Join
+                - /
+                - - !Ref AWS::AccountId
+                  - gds-recommendations-v1
+                  - data
+            Destination:
+              Bucket: !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref DestinationBucket
+            DeleteMarkerReplication:
+              Status: Disabled
+  ReplicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: GDSCloudConsumption
+      Path: /service-role/
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - s3.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Replication
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetReplicationConfiguration
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DestinationBucket
+              - Effect: Allow
+                Action:
+                  - s3:ReplicateObject
+                  - s3:ReplicateDelete
+                  - s3:ReplicateTags
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DestinationBucket
+                    - /*
+  ReportBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ReportBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:PutObject'
+              - 's3:GetBucketPolicy'
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:s3:::${ReportBucket}
+              - !Sub arn:aws:s3:::${ReportBucket}/*
+            Principal:
+              Service:
+                - bcm-data-exports.amazonaws.com
+                - billingreports.amazonaws.com
+            Condition:
+              StringLike:
+                'aws:SourceArn':
+                  - !Sub arn:aws:cur:us-east-1:${AWS::AccountId}:definition/*
+                  - !Sub arn:aws:bcm-data-exports:us-east-1:${AWS::AccountId}:export/*
