@@ -2,9 +2,6 @@ Parameters:
   DestinationBucket:
     Description: Destination bucket to replicate reports to
     Type: String
-  DestinationAccountId:
-    Type: String
-    Description: AWS Account ID of the destination
   CreateExportsServiceLinkedRole:
     Type: String
     AllowedValues:
@@ -43,8 +40,8 @@ Resources:
               Format: PARQUET
               OutputType: CUSTOM
             S3Region: eu-west-2
-            S3Prefix: !Ref DestinationAccountId
-        Name: gds-carbon-v1
+            S3Prefix: !Ref AWS::AccountId
+        Name: gds-focus-v1
   CarbonExport:
     Type: AWS::BCMDataExports::Export
     DependsOn:
@@ -68,8 +65,8 @@ Resources:
               Format: PARQUET
               OutputType: CUSTOM
             S3Region: eu-west-2
-            S3Prefix: !Ref DestinationAccountId
-        Name: gds-focus-v1
+            S3Prefix: !Ref AWS::AccountId
+        Name: gds-carbon-v1
   RecommendationsExport:
     Type: AWS::BCMDataExports::Export
     DependsOn:
@@ -95,7 +92,7 @@ Resources:
               Format: PARQUET
               OutputType: CUSTOM
             S3Region: eu-west-2
-            S3Prefix: !Ref DestinationAccountId
+            S3Prefix: !Ref AWS::AccountId
         Name: gds-recommendations-v1
   ReportBucket:
     Type: AWS::S3::Bucket
@@ -179,15 +176,19 @@ Resources:
                 Action:
                   - s3:ListBucket
                   - s3:GetReplicationConfiguration
-                Resource: !Join
-                  - ''
-                  - - 'arn:aws:s3:::'
-                    - !Ref DestinationBucket
+                Resource: !Sub arn:aws:s3:::gds-export-${AWS::AccountId}
+              - Effect: Allow
+                Action:
+                  - s3:GetObjectVersionForReplication
+                  - s3:GetObjectVersionAcl
+                  - s3:GetObjectVersionTagging
+                Resource: !Sub arn:aws:s3:::gds-export-${AWS::AccountId}/*
               - Effect: Allow
                 Action:
                   - s3:ReplicateObject
                   - s3:ReplicateDelete
                   - s3:ReplicateTags
+                  - s3:ObjectOwnerOverrideToBucketOwner
                 Resource: !Join
                   - ''
                   - - 'arn:aws:s3:::'
