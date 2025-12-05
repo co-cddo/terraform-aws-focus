@@ -46,6 +46,7 @@ data "aws_iam_policy_document" "replicator" {
       "s3:GetObjectVersionTagging",
     ]
 
+    #tfsec:ignore:aws-iam-no-policy-wildcards
     resources = [
       format("%s/*", aws_s3_bucket.this.arn),
     ]
@@ -73,6 +74,7 @@ data "aws_iam_policy_document" "replicator" {
       "s3:ReplicateTags",
     ]
 
+    #tfsec:ignore:aws-iam-no-policy-wildcards
     resources = [
       format("arn:aws:s3:::%s/*", var.destination_bucket_name),
     ]

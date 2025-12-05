@@ -28,6 +28,18 @@ variable "bucket_tags" {
   description = "Map of tags to be associated with the reporting bucket"
 }
 
+variable "enable_public_access_block" {
+  type        = bool
+  default     = true
+  description = "Enables or disables public access block on the S3 bucket used for storing reports."
+}
+
+variable "enable_default_encryption" {
+  type        = bool
+  default     = true
+  description = "Enables or disables default S3 encryption on the S3 bucket used for storing reports."
+}
+
 variable "destination_account_id" {
   type        = string
   description = "The account ID of the destination S3 bucket where reports will be replicated to. This will be provided as part of the onboarding process."
