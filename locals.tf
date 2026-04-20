@@ -46,6 +46,11 @@ locals {
     "ServiceName",
     "SkuId",
     "SkuPriceId",
+    "Tags",
+    "CapacityReservationId",
+    "CapacityReservationStatus",
+    "SkuMeter",
+    "ServiceSubcategory",
   ]
 
   carbon_export_fields = [

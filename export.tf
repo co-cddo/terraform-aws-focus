@@ -5,13 +5,13 @@ moved {
 
 resource "aws_bcmdataexports_export" "focus" {
   export {
-    name = "gds-focus-v1"
+    name = "gds-focus-v2"
 
     data_query {
-      query_statement = format("SELECT %s FROM FOCUS_1_0_AWS", join(", ", local.focus_export_fields))
+      query_statement = format("SELECT %s FROM FOCUS_1_2_AWS", join(", ", local.focus_export_fields))
 
       table_configurations = {
-        FOCUS_1_0_AWS = {}
+        FOCUS_1_2_AWS = {}
       }
     }
 
@@ -40,7 +40,7 @@ resource "aws_bcmdataexports_export" "carbon" {
   for_each = local.carbon_toggle
 
   export {
-    name = "gds-carbon-v1"
+    name = "gds-carbon-v2"
 
     data_query {
       query_statement = format("SELECT %s FROM CARBON_EMISSIONS", join(", ", local.carbon_export_fields))
@@ -75,7 +75,7 @@ resource "aws_bcmdataexports_export" "recommendations" {
   for_each = local.cost_recommendations_toggle
 
   export {
-    name = "gds-recommendations-v1"
+    name = "gds-recommendations-v2"
 
     data_query {
       query_statement = format("SELECT %s FROM COST_OPTIMIZATION_RECOMMENDATIONS", join(", ", local.recommendations_export_fields))
