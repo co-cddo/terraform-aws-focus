@@ -40,7 +40,7 @@ resource "aws_bcmdataexports_export" "carbon" {
   for_each = local.carbon_toggle
 
   export {
-    name = "gds-carbon-v2"
+    name = "gds-carbon-v1"
 
     data_query {
       query_statement = format("SELECT %s FROM CARBON_EMISSIONS", join(", ", local.carbon_export_fields))
@@ -75,7 +75,7 @@ resource "aws_bcmdataexports_export" "recommendations" {
   for_each = local.cost_recommendations_toggle
 
   export {
-    name = "gds-recommendations-v2"
+    name = "gds-recommendations-v1"
 
     data_query {
       query_statement = format("SELECT %s FROM COST_OPTIMIZATION_RECOMMENDATIONS", join(", ", local.recommendations_export_fields))

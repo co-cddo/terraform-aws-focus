@@ -43,3 +43,15 @@ variable "tags" {
   default     = {}
   description = "Tags to apply to all resources created by this module."
 }
+
+variable "overwrite_default_role_name" {
+  description = "If set, overrides the default IAM role name"
+  type        = string
+  default     = ""
+}
+
+variable "overwrite_default_role_policy_name" {
+  description = "If set, overrides the default IAM role policy name"
+  type        = string
+  default     = ""
+}

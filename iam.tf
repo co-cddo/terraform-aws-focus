@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "replicator_assume" {
 }
 
 resource "aws_iam_role" "this" {
-  name               = "GDSCloudConsumption_v2_test"
+  name               = var.overwrite_default_role_name != "" ? var.overwrite_default_role_name : "GDSCloudConsumption"
   path               = "/service-role/"
   assume_role_policy = data.aws_iam_policy_document.replicator_assume.json
 }
@@ -80,7 +80,8 @@ data "aws_iam_policy_document" "replicator" {
 }
 
 resource "aws_iam_role_policy" "replicator" {
-  name   = "Replication_v2_test"
+  name = var.overwrite_default_role_policy_name != "" ? var.overwrite_default_role_policy_name : "Replication"
+
   role   = aws_iam_role.this.id
   policy = data.aws_iam_policy_document.replicator.json
 }
