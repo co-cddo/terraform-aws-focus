@@ -75,6 +75,29 @@ data "aws_iam_policy_document" "bucket" {
       ]
     }
   }
+
+  statement {
+    sid    = "DenyNonSSLRequests"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+
+    resources = [
+      aws_s3_bucket.this.arn,
+      format("%s/*", aws_s3_bucket.this.arn),
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
 }
 
 resource "aws_s3_bucket_policy" "this" {
