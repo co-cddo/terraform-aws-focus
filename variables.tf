@@ -43,3 +43,29 @@ variable "tags" {
   default     = {}
   description = "Tags to apply to all resources created by this module."
 }
+
+variable "additional_policy_statements" {
+  type = list(object({
+    sid       = string
+    effect    = string
+    actions   = list(string)
+    resources = list(string)
+    principals = object({
+      type        = string
+      identifiers = list(string)
+    })
+    conditions = list(object({
+      test     = string
+      variable = string
+      values   = list(string)
+    }))
+  }))
+  default     = []
+  description = "Additional IAM policy statements to include in the S3 bucket policy. All fields are required — use empty string for sid if not needed, empty list for conditions if none required. Statements are appended to the default BCM grant and cannot replace or remove it. Use this instead of creating a separate aws_s3_bucket_policy resource."
+}
+
+variable "enforce_secure_defaults" {
+  type        = bool
+  default     = false
+  description = "When true, adds hardening deny statements to the bucket policy (e.g. DenyNonSSLRequests). Defaults to false for backward compatibility. Will default to true in a future major release."
+}
