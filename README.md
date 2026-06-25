@@ -1,5 +1,7 @@
 # terraform-aws-focus
 
+[![MIT Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENCE)
+
 A Terraform module for exporting:
 * [FOCUS](https://focus.finops.org/) (FinOps Open Cost and Usage Specification).
 * [Cost Optimisation recommendations](https://aws.amazon.com/blogs/aws-cloud-financial-management/generate-your-cost-optimization-reports-with-data-exports-for-cost-optimization-hub/).
@@ -175,3 +177,18 @@ No modules.
 |------|-------------|
 | <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | The ARN of the bucket created to store reports before replicating to GDS |
 | <a name="output_replication_role_arn"></a> [replication\_role\_arn](#output\_replication\_role\_arn) | The ARN of the role used to replicate data from the source account to the destination account |
+
+## Support and contact
+
+This module is maintained by the [OCTO Observability team](https://github.com/orgs/co-cddo/teams/octo-observability) at the Department for Science, Innovation & Technology.
+
+- **Questions or issues:** [Open a GitHub issue](../../issues/new).
+- **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Security concerns:** See [SECURITY.md](SECURITY.md).
+
+## Licence
+
+Unless stated otherwise, the codebase is released under the [MIT Licence](LICENCE).
+This covers both the codebase and any sample code in the documentation.
+The documentation is © Crown copyright and available under the terms of the
+[Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
