@@ -27,6 +27,84 @@ The Bucket's Role has permissions to replicate any Object that is put in it, so 
 
 If this library is deployed through a continuous deployment (CD) pipeline, deploying teams should thoroughly check any changes to this codebase before they are deployed. 
 
+## Bucket Policy
+
+The module creates an S3 bucket policy that grants the BCM Data Exports service the permissions it needs to write report data. This policy is always present and cannot be removed.
+
+### Default behaviour
+
+By default, the module applies only the BCM grant. Upgrading to a new version of the module will not change this policy — existing deployments see no Terraform plan changes.
+
+### Recommended: adding statements via the module
+
+Use `additional_policy_statements` to add your own IAM statements on top of the default BCM grant. This is the recommended approach — it avoids creating a second `aws_s3_bucket_policy` resource that would conflict with the module's own.
+
+Example — adding `DenyNonSSLRequests`:
+
+```hcl
+module "focus" {
+  source = "github.com/co-cddo/terraform-aws-focus?ref=..."
+
+  destination_account_id  = var.cddo_destination_account_id
+  destination_bucket_name = var.cddo_destination_bucket_name
+
+  additional_policy_statements = [
+    {
+      sid       = "DenyNonSSLRequests"
+      effect    = "Deny"
+      actions   = ["s3:*"]
+      resources = [
+        "arn:aws:s3:::my-bucket",
+        "arn:aws:s3:::my-bucket/*",
+      ]
+      principals = {
+        type        = "*"
+        identifiers = ["*"]
+      }
+      conditions = [
+        {
+          test     = "Bool"
+          variable = "aws:SecureTransport"
+          values   = ["false"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+All fields in each statement object are required. Use `sid = ""` if you don't need a statement ID, and `conditions = []` if you have no conditions.
+
+> **Note:** Invalid ARNs in `resources` or `principals.identifiers` will not cause `terraform plan` to fail — they will be rejected by AWS at `terraform apply` time.
+
+### Hardening deny statements
+
+Set `enforce_secure_defaults = true` to add pre-built hardening deny statements to the policy. Currently includes:
+
+- `DenyNonSSLRequests` — denies all S3 actions over non-HTTPS connections
+
+**This variable defaults to `false` for backward compatibility. It will default to `true` in a future major release.** Teams are encouraged to opt in now.
+
+```hcl
+module "focus" {
+  source = "github.com/co-cddo/terraform-aws-focus?ref=..."
+
+  destination_account_id  = var.cddo_destination_account_id
+  destination_bucket_name = var.cddo_destination_bucket_name
+
+  enforce_secure_defaults = true
+}
+```
+
+### Legacy: external `aws_s3_bucket_policy` resource
+
+If you currently manage your own `aws_s3_bucket_policy` resource targeting the module's bucket, this continues to work. However, Terraform will conflict if both your resource and the module attempt to manage the same bucket policy. To migrate to the recommended approach:
+
+1. Move your custom statements into `additional_policy_statements` on the module
+2. Remove your external `aws_s3_bucket_policy` resource from your configuration
+3. Run `terraform state rm aws_s3_bucket_policy.<your_resource_name>` to remove it from state
+4. Run `terraform plan` — you should see the policy updated in-place with no destruction
+
 ## Features
 
 * Creates AWS Billing & Cost Management data exports for FOCUS, Carbon Emission and Cost Optimisation.
@@ -78,12 +156,14 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_policy_statements"></a> [additional\_policy\_statements](#input\_additional\_policy\_statements) | Additional IAM policy statements to include in the S3 bucket policy. All fields are required. Statements are appended to the default BCM grant and cannot replace or remove it. | `list(object(...))` | `[]` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | The name of the S3 bucket to be created to store reports before replication. If omitted it will create one for you. | `string` | `null` | no |
 | <a name="input_bucket_tags"></a> [bucket\_tags](#input\_bucket\_tags) | Map of tags to be associated with the reporting bucket | `map(string)` | `{}` | no |
 | <a name="input_create_cost_recommendations_service_linked_role"></a> [create\_cost\_recommendations\_service\_linked\_role](#input\_create\_cost\_recommendations\_service\_linked\_role) | Enables the creation of the required service-linked role for data exports to access cost optimisation hub | `bool` | `false` | no |
 | <a name="input_destination_account_id"></a> [destination\_account\_id](#input\_destination\_account\_id) | The account ID of the destination S3 bucket where reports will be replicated to. This will be provided as part of the onboarding process. | `string` | n/a | yes |
 | <a name="input_destination_bucket_name"></a> [destination\_bucket\_name](#input\_destination\_bucket\_name) | The name of the destination S3 bucket where reports will be replicated to. This will be provided as part of the onboarding process. | `string` | n/a | yes |
 | <a name="input_enable_carbon_export"></a> [enable\_carbon\_export](#input\_enable\_carbon\_export) | Enables the collection of carbon footprint report | `bool` | `true` | no |
+| <a name="input_enforce_secure_defaults"></a> [enforce\_secure\_defaults](#input\_enforce\_secure\_defaults) | When true, adds hardening deny statements to the bucket policy (e.g. DenyNonSSLRequests). Defaults to false for backward compatibility. Will default to true in a future major release. | `bool` | `false` | no |
 | <a name="input_enable_cost_recommendations_export"></a> [enable\_cost\_recommendations\_export](#input\_enable\_cost\_recommendations\_export) | Enables the collection of cost recommendations report | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources created by this module. | `map(string)` | `{}` | no |
 

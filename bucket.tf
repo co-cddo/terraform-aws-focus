@@ -75,6 +75,56 @@ data "aws_iam_policy_document" "bucket" {
       ]
     }
   }
+
+  dynamic "statement" {
+    for_each = var.additional_policy_statements
+
+    content {
+      sid       = statement.value.sid
+      effect    = statement.value.effect
+      actions   = statement.value.actions
+      resources = statement.value.resources
+
+      principals {
+        type        = statement.value.principals.type
+        identifiers = statement.value.principals.identifiers
+      }
+
+      dynamic "condition" {
+        for_each = statement.value.conditions
+        content {
+          test     = condition.value.test
+          variable = condition.value.variable
+          values   = condition.value.values
+        }
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.enforce_secure_defaults ? [1] : []
+
+    content {
+      sid     = "DenyNonSSLRequests"
+      effect  = "Deny"
+      actions = ["s3:*"]
+      resources = [
+        aws_s3_bucket.this.arn,
+        format("%s/*", aws_s3_bucket.this.arn),
+      ]
+
+      principals {
+        type        = "*"
+        identifiers = ["*"]
+      }
+
+      condition {
+        test     = "Bool"
+        variable = "aws:SecureTransport"
+        values   = ["false"]
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket_policy" "this" {
