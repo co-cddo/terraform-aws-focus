@@ -79,9 +79,10 @@ All fields in each statement object are required. Use `sid = ""` if you don't ne
 
 ### Hardening deny statements
 
-Set `enforce_secure_defaults = true` to add pre-built hardening deny statements to the policy. Currently includes:
+Set `enforce_secure_defaults = true` to add pre-built hardening to the bucket. Currently includes:
 
-- `DenyNonSSLRequests` — denies all S3 actions over non-HTTPS connections
+- `DenyNonSSLRequests` — denies all S3 actions over non-HTTPS connections (bucket policy)
+- Public access block — enables all four settings (`block_public_acls`, `block_public_policy`, `ignore_public_acls`, `restrict_public_buckets`)
 
 **This variable defaults to `false` for backward compatibility. It will default to `true` in a future major release.** Teams are encouraged to opt in now.
 
@@ -146,6 +147,7 @@ No modules.
 | [aws_s3_bucket_lifecycle_configuration.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_replication_configuration.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_replication_configuration) | resource |
+| [aws_s3_bucket_public_access_block.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_versioning.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_caller_identity.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -163,7 +165,7 @@ No modules.
 | <a name="input_destination_account_id"></a> [destination\_account\_id](#input\_destination\_account\_id) | The account ID of the destination S3 bucket where reports will be replicated to. This will be provided as part of the onboarding process. | `string` | n/a | yes |
 | <a name="input_destination_bucket_name"></a> [destination\_bucket\_name](#input\_destination\_bucket\_name) | The name of the destination S3 bucket where reports will be replicated to. This will be provided as part of the onboarding process. | `string` | n/a | yes |
 | <a name="input_enable_carbon_export"></a> [enable\_carbon\_export](#input\_enable\_carbon\_export) | Enables the collection of carbon footprint report | `bool` | `true` | no |
-| <a name="input_enforce_secure_defaults"></a> [enforce\_secure\_defaults](#input\_enforce\_secure\_defaults) | When true, adds hardening deny statements to the bucket policy (e.g. DenyNonSSLRequests). Defaults to false for backward compatibility. Will default to true in a future major release. | `bool` | `false` | no |
+| <a name="input_enforce_secure_defaults"></a> [enforce\_secure\_defaults](#input\_enforce\_secure\_defaults) | When true, adds hardening to the bucket: denies non-SSL requests via bucket policy and enables all four public access block settings. Defaults to false for backward compatibility. Will default to true in a future major release. | `bool` | `false` | no |
 | <a name="input_enable_cost_recommendations_export"></a> [enable\_cost\_recommendations\_export](#input\_enable\_cost\_recommendations\_export) | Enables the collection of cost recommendations report | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources created by this module. | `map(string)` | `{}` | no |
 
