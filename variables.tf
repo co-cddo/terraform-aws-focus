@@ -67,5 +67,5 @@ variable "additional_policy_statements" {
 variable "enforce_secure_defaults" {
   type        = bool
   default     = false
-  description = "When true, adds hardening deny statements to the bucket policy (e.g. DenyNonSSLRequests). Defaults to false for backward compatibility. Will default to true in a future major release."
+  description = "When true, adds hardening to the bucket: denies non-SSL requests via bucket policy and enables all four public access block settings. Defaults to false for backward compatibility. Will default to true in a future major release."
 }

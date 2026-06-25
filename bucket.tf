@@ -132,6 +132,17 @@ resource "aws_s3_bucket_policy" "this" {
   policy = data.aws_iam_policy_document.bucket.json
 }
 
+resource "aws_s3_bucket_public_access_block" "this" {
+  count = var.enforce_secure_defaults ? 1 : 0
+
+  bucket = aws_s3_bucket.this.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket_replication_configuration" "this" {
   bucket = aws_s3_bucket.this.id
   role   = aws_iam_role.this.arn
