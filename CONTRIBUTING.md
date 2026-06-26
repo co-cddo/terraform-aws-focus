@@ -24,6 +24,14 @@ at the Department for Science, Innovation & Technology.
 - Keep Terraform formatted: `terraform fmt -recursive`
 - Do not commit secrets, account IDs, or ARNs
 
+## Releasing
+
+Maintainers only. Releases are automated via GitHub Actions:
+
+1. Go to **Actions → Create Release**
+2. Select the bump type: `major`, `minor`, or `patch`
+3. The workflow calculates the next semver tag, creates it, and publishes a GitHub Release with auto-generated notes
+
 ## Licence
 
 By contributing, you agree that your contributions will be licensed under the

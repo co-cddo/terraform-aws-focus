@@ -45,7 +45,7 @@ Example — adding `DenyNonSSLRequests`:
 
 ```hcl
 module "focus" {
-  source = "github.com/co-cddo/terraform-aws-focus?ref=..."
+  source = "github.com/co-cddo/terraform-aws-focus?ref=v2.0.2"
 
   destination_account_id  = var.cddo_destination_account_id
   destination_bucket_name = var.cddo_destination_bucket_name
@@ -90,7 +90,7 @@ Set `enforce_secure_defaults = true` to add pre-built hardening to the bucket. C
 
 ```hcl
 module "focus" {
-  source = "github.com/co-cddo/terraform-aws-focus?ref=..."
+  source = "github.com/co-cddo/terraform-aws-focus?ref=v2.0.2"
 
   destination_account_id  = var.cddo_destination_account_id
   destination_bucket_name = var.cddo_destination_bucket_name
@@ -177,6 +177,18 @@ No modules.
 |------|-------------|
 | <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | The ARN of the bucket created to store reports before replicating to GDS |
 | <a name="output_replication_role_arn"></a> [replication\_role\_arn](#output\_replication\_role\_arn) | The ARN of the role used to replicate data from the source account to the destination account |
+
+## Versioning
+
+This module uses [semantic versioning](https://semver.org/). Pin to a specific release tag to avoid unexpected changes:
+
+```hcl
+module "focus" {
+  source = "github.com/co-cddo/terraform-aws-focus?ref=v2.0.2"
+}
+```
+
+All releases are listed on the [GitHub Releases page](https://github.com/co-cddo/terraform-aws-focus/releases).
 
 ## Support and contact
 
