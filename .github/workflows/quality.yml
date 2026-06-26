@@ -1,0 +1,57 @@
+name: Quality
+
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+      - run: terraform fmt -recursive -check
+      - run: terraform init -backend=false
+      - run: terraform validate
+
+  zizmor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e # v0.5.3
+        with:
+          advanced-security: false
+
+  check:
+    if: always()
+    needs: [terraform, zizmor]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all jobs passed
+        run: |
+          results=( \
+            "${{ needs.terraform.result }}" \
+            "${{ needs.zizmor.result }}" \
+          )
+          for r in "${results[@]}"; do
+            if [[ "$r" != "success" && "$r" != "skipped" ]]; then
+              echo "Job failed or was cancelled: $r"
+              exit 1
+            fi
+          done
+          echo "All quality checks passed"
