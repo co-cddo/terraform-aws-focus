@@ -194,7 +194,7 @@ All releases are listed on the [GitHub Releases page](https://github.com/co-cddo
 
 This module is maintained by the [OCTO Observability team](https://github.com/orgs/co-cddo/teams/octo-observability) at the Department for Science, Innovation & Technology.
 
-- **Questions or issues:** [Open a GitHub issue](../../issues/new).
+- **Questions or issues:** [Open a GitHub issue](../../issues/new) or email [observability@dsit.gov.uk](mailto:observability@dsit.gov.uk).
 - **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Security concerns:** See [SECURITY.md](SECURITY.md).
 
