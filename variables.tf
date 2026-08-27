@@ -6,7 +6,7 @@ variable "enable_carbon_export" {
 
 variable "enable_cost_recommendations_export" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enables the collection of cost recommendations report"
 }
 
