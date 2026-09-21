@@ -148,6 +148,24 @@ resource "aws_s3_bucket_replication_configuration" "this" {
     }
   }
 
+  rule {
+    id       = "GDSMetadata"
+    status   = "Enabled"
+    priority = 7
+
+    destination {
+      bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
+    }
+
+    filter {
+      prefix = format("%s/metadata/", local.account_id)
+    }
+
+    delete_marker_replication {
+      status = "Disabled"
+    }
+  }
+
   depends_on = [
     aws_s3_bucket_versioning.this,
   ]
