@@ -14,4 +14,8 @@ resource "aws_s3_object" "metadata" {
     enable_carbon_export               = var.enable_carbon_export
     enable_cost_recommendations_export = var.enable_cost_recommendations_export
   })
+
+  depends_on = [
+    aws_s3_bucket_replication_configuration.this,
+  ]
 }
