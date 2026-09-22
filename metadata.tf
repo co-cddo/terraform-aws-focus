@@ -11,8 +11,8 @@ resource "aws_s3_object" "manifest" {
     module_source  = data.modtm_module_source.this.module_source
     module_version = data.modtm_module_source.this.module_version
     configuration = {
-      enable_focus_export               = true
-      enable_carbon_export              = var.enable_carbon_export
+      enable_focus_export                = true
+      enable_carbon_export               = var.enable_carbon_export
       enable_cost_recommendations_export = var.enable_cost_recommendations_export
     }
   })

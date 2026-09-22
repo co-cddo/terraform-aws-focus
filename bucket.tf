@@ -230,5 +230,5 @@ resource "aws_s3_bucket_replication_configuration" "this" {
   depends_on = [
     aws_s3_bucket_versioning.this,
   ]
-  
+
 }
