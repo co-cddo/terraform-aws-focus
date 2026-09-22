@@ -9,5 +9,9 @@ terraform {
     time = {
       source = "hashicorp/time"
     }
+
+    modtm = {
+      source = "Azure/modtm"
+    }
   }
 }
