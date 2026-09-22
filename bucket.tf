@@ -209,7 +209,26 @@ resource "aws_s3_bucket_replication_configuration" "this" {
     }
   }
 
+  rule {
+    id       = "GDSManifest"
+    status   = "Enabled"
+    priority = 7
+
+    destination {
+      bucket = format("arn:aws:s3:::%s", var.destination_bucket_name)
+    }
+
+    filter {
+      prefix = format("%s/manifest.json", local.account_id)
+    }
+
+    delete_marker_replication {
+      status = "Disabled"
+    }
+  }
+
   depends_on = [
     aws_s3_bucket_versioning.this,
   ]
+  
 }
