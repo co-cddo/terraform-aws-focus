@@ -111,6 +111,7 @@ If you currently manage your own `aws_s3_bucket_policy` resource targeting the m
 ## Features
 
 * Creates AWS Billing & Cost Management data exports for FOCUS, Carbon Emission and Cost Optimisation.
+* Creates a manifest file which will keep a record of how the module has been setup.
 * Creates an S3 Bucket storing export data in the AWS account.
 * Configures replication to a GDS managed destination S3 Bucket.
 * Creates a service-link IAM Role for use in replication to GDS.
@@ -151,6 +152,7 @@ No modules.
 | [aws_s3_bucket_replication_configuration.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_replication_configuration) | resource |
 | [aws_s3_bucket_public_access_block.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_versioning.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
+| [aws_s3_object.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_object) | resource |
 | [aws_caller_identity.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.replicator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
